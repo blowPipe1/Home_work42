@@ -47,6 +47,15 @@ public class ClientHandler implements Runnable {
             System.out.println("Client dropped connection: " + clientName);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            clients.remove(this);
+            broadcastMessage("SERVER: " + clientName + " has left the chat.");
+            System.out.println("Client disconnected: " + clientName);
         }
     }
 

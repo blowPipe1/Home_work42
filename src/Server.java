@@ -1,12 +1,7 @@
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,6 +31,8 @@ public class Server {
         } catch (IOException e) {
             System.out.format("Вероятнее всего порт %s занят%n", port);
             e.printStackTrace();
+        } finally {
+            pool.shutdown();
         }
     }
 }
