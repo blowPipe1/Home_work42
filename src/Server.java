@@ -31,6 +31,7 @@ public class Server {
                 Socket socket = server.accept();
                 ClientHandler clientHandler = new ClientHandler(socket, clients);
                 clients.add(clientHandler);
+                pool.submit(clientHandler);
             }
         } catch (IOException e) {
             System.out.format("Вероятнее всего порт %s занят%n", port);

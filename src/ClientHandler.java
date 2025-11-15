@@ -9,7 +9,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 
-public class ClientHandler{
+public class ClientHandler implements Runnable {
     private final Socket socket;
     private final List<ClientHandler> clients;
     private final String clientName;
@@ -22,6 +22,32 @@ public class ClientHandler{
         this.clients = clients;
         this.rnd = new Random();
         this.clientName = "User_" + rnd.nextInt(1, 100);
+    }
+
+    @Override
+    public void run() {
+        System.out.format("Connected client: %s with name %s%n", socket, clientName);
+
+        try {
+            this.reader = new Scanner(new InputStreamReader(socket.getInputStream()));
+            this.writer = new PrintWriter(socket.getOutputStream());
+
+            sendResponse("hello " + clientName, writer);
+            broadcastMessage("SERVER: " + clientName + " has joined the chat.");
+
+            while (true) {
+                String message = reader.nextLine().trim();
+                if (isEmptyMsg(message) || isQuitMsg(message)) {
+                    break;
+                }
+                broadcastMessage(String.format("<%s>: %s", clientName, message), this);
+                System.out.format("Got message from %s: %s%n", clientName, message);
+            }
+        } catch (NoSuchElementException e) {
+            System.out.println("Client dropped connection: " + clientName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static boolean isQuitMsg(String msg) {
