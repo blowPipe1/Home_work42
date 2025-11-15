@@ -41,4 +41,17 @@ public class ClientHandler{
             System.err.println("Error sending message: " + e.getMessage());
         }
     }
+
+    private void broadcastMessage(String message, ClientHandler sender) {
+        for (ClientHandler client : clients) {
+            if (sender == null || !client.equals(sender)) {
+                client.sendResponse(message, client.writer);
+            }
+        }
+    }
+
+    //перегрузка метода
+    private void broadcastMessage(String message) {
+        broadcastMessage(message, null);
+    }
 }
